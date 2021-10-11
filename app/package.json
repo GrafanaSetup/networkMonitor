@@ -1,0 +1,31 @@
+{
+  "name": "grafana-ping",
+  "version": "0.0.1",
+  "description": "",
+  "main": "app.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "dev": "nodemon",
+    "start": "forever app.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/GrafanaSetup/networkMonitor.git"
+  },
+  "author": "Linus Romland, Markus Simonsen",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/GrafanaSetup/networkMonitor/issues"
+  },
+  "homepage": "https://github.com/GrafanaSetup/networkMonitor#readme",
+  "devDependencies": {
+    "nodemon": "^2.0.13"
+  },
+  "dependencies": {
+    "dotenv": "^10.0.0",
+    "forever": "^0.14.2",
+    "mongoose": "^6.0.10",
+    "ping": "^0.4.1",
+    "speedtest-net": "^2.2.0"
+  }
+}

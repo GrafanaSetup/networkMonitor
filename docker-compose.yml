@@ -1,0 +1,14 @@
+version: "3.5"
+
+services:
+  network-monitor:
+    restart: always
+    build: ./app
+    environment:
+      MONGOURL: mongodb://mongo:27017/
+    networks:
+      - basicsetup_some-net
+
+networks:
+  basicsetup_some-net:
+    external: true
