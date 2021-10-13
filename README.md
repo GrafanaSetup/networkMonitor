@@ -1,4 +1,4 @@
-# Grafana networkMonitor
+# networkMonitor
 
 Network monitor that logs your ping every second and your internet speed every 30minutes and saves to InfluxDB
 
