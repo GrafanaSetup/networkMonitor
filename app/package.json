@@ -24,6 +24,7 @@
   "dependencies": {
     "dotenv": "^10.0.0",
     "forever": "^0.14.2",
+    "influx": "^5.9.2",
     "mongoose": "^6.0.10",
     "ping": "^0.4.1",
     "speedtest-net": "^2.2.0"
