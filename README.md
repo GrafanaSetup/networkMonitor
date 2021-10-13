@@ -8,3 +8,7 @@ Network monitor that logs your ping every second and your internet speed every 3
 Make sure you have Docker and docker-compose installed.
 Then just run `docker-compose up`.
 Add `-d` to start it detached!
+
+## License
+
+`networkMonitor` is free and open-source software licensed under the [`MIT License`](https://github.com/GrafanaSetup/networkMonitor/blob/master/LICENSE).
