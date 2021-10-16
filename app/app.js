@@ -15,78 +15,65 @@ const Speedtest = require("./models/Speedtest.js");
 const mongoURL = process.env.MONGOURL || "mongodb://localhost:27017/";
 
 //Influxdb init
-const influx = new Influx.InfluxDB({
+const { InfluxDB } = require('@influxdata/influxdb-client')
+const { Point } = require('@influxdata/influxdb-client')
 
-    host: 'localhost',
-    database: 'network_monitor',
-    username: 'test_username',
-    password: 'test_password',
-    schema: [
-      {
-        measurement: 'ping',
-        fields: { pingTime: Influx.FieldType.FLOAT },
-        tags: ['unit']
-      }
-    ]
-  });
+// You can generate a Token from the "Tokens Tab" in the UI
+const token = 'test_token'
+const org = 'test_org'
+const bucket = 'test_bucket'
 
-  influx.getDatabaseNames()
-  .then(names => {
-    if (!names.includes('network_monitor')) {
-      return influx.createDatabase('network_monitor');
-    }
-  })
-  .catch(error => console.log({ error }));
+const client = new InfluxDB({ url: 'http://localhost:8086', token: token })
+
+
 
 //Connect to Mongo
 //database.connect("GrafanaPing", mongoURL);
 
 let speedTestConfig = {
-    acceptLicense: true,
-    acceptGdpr: true
+  acceptLicense: true,
+  acceptGdpr: true
 }
 
 //setInterval(newSpeedTest, 1800000)
 
 setInterval(async () => {
-    let pingVar = await ping.promise.probe("speedtest.net")
-    console.log(pingVar.time);
-    influx.writePoints([
-        {
-          measurement: 'ping',
-          tags: {
-            unit: "ms",
-          },
-          fields: { pingTime: pingVar.time },
-          timestamp: Date.now(),
-        }
-      ], {
-        database: 'network_monitor',
-        precision: 'n',
-      })
-      .catch(error => {
-        console.error(`Error saving data to InfluxDB! ${err.stack}`)
-      });
+  let pingVar = await ping.promise.probe("speedtest.net")
+  console.log(pingVar.time);
+  const writeApi = client.getWriteApi(org, bucket)
+  writeApi.useDefaultTags({ host: 'host1' })
+  const point = new Point('ping')
+    .floatField('ms', pingVar.time)
+  writeApi.writePoint(point)
+  writeApi
+    .close()
+    .then(() => {
+      console.log('FINISHED')
+    })
+    .catch(e => {
+      console.error(e)
+      console.log('\\nFinished ERROR')
+    })
 }, 2000)
 
 async function newSpeedTest() {
-    console.log("Started speedtest")
-    let testResult = await speedTest(speedTestConfig)
-    let speedTestModel = createSpeedtestModel(testResult.upload.bandwidth, testResult.download.bandwidth)
-    database.saveToDB(speedTestModel)
+  console.log("Started speedtest")
+  let testResult = await speedTest(speedTestConfig)
+  let speedTestModel = createSpeedtestModel(testResult.upload.bandwidth, testResult.download.bandwidth)
+  database.saveToDB(speedTestModel)
 }
 
 //Creates Ping from Model & inputs
 createPingModel = (ping) => {
-    return new Ping({
-        ping: ping
-    });
+  return new Ping({
+    ping: ping
+  });
 };
 
 //Creates Speedtest from Model & inputs
 createSpeedtestModel = (up, down) => {
-    return new Speedtest({
-        speedUp: up,
-        speedDown: down
-    });
+  return new Speedtest({
+    speedUp: up,
+    speedDown: down
+  });
 };
