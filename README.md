@@ -6,7 +6,7 @@ Network monitor that logs your ping every second and your internet speed every 3
 
 ## Setup
 Make sure you have Docker and docker-compose installed.
-Then just run `docker-compose up`.
+Then just run `docker-compose up --build`.
 Add `-d` to start it detached!
 
 ## License
