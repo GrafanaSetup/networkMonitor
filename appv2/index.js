@@ -10,14 +10,10 @@ let speedTestConfig = {
 }
 
 app.get('/ping/metrics', async (req, res) => {
+        console.log("Ping")
         let pingVar = await ping.promise.probe("speedtest.net")
-        console.log(pingVar)
         if (pingVar.time > 0.1) {
-                res.send(`
-                # HELP go_ping_time_ms Current ping time
-                # TYPE go_ping_time_ms gauge'
-                go_ping_time_ms ${pingVar.time}
-                `)
+                res.send(`# HELP go_ping_time_ms Current ping time\n# TYPE go_ping_time_ms gauge\ngo_ping_time_ms ${pingVar.time}`)
         } else {
                 res.status(503).send("No connection to internet")
         }
@@ -31,14 +27,7 @@ app.get('/bandwidth/metrics', async (req, res) => {
 
         if (testResult.download != undefined) {
                 console.log(testResult.download.bandwidth)
-                res.send(`
-                # HELP go_bandwidth_upload Current bandwidth up in bytes per second
-                # TYPE go_bandwidth_upload gauge'
-                go_bandwidth_upload ${testResult.upload.bandwidth}
-                # HELP go_bandwidth_download Current bandwidth down in bytes per second
-                # TYPE go_bandwidth_download gauge'
-                go_bandwidth_download ${testResult.download.bandwidth}
-                `)
+                res.send(`# HELP go_bandwidth_upload Current bandwidth up in bytes per second\n# TYPE go_bandwidth_upload gauge\ngo_bandwidth_upload ${testResult.upload.bandwidth}\n# HELP go_bandwidth_download Current bandwidth down in bytes per second\n# TYPE go_bandwidth_download gauge\ngo_bandwidth_download ${testResult.download.bandwidth}`)
         } else {
                 res.status(503).send("No connection to internet")
         }
